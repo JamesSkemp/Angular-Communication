@@ -84,5 +84,40 @@ set listFilter(value: string) {
 }
 ```
 
+# Module 4
+In my opinion, using these has more downsides than benefits.
 
+## `ViewChild`
+
+```
+// Angular Directive
+@ViewChild(NgModel) filterInput: NgModel; // <input type="text" [(ngModel)]="listFilter" />
+// Custom Directive or Child Component
+@ViewChild(StarComponent) star: StarComponent;
+// Template Reference Variable
+@ViewChild('divElementVar') divElementRef: ElementRef; // <div #divElementVar>{{pageTitle}}</div>
+// Above is available during/after ngAfterViewInit(), which is after constructor() and ngOnInit().
+// However, if within a *ngIf you may run into an issue.
+// ElementRef has a nativeElement which allows for access to any HTML element properties or methods.
+@ViewChild(NgForm) editForm: NgForm; // if using template-driven forms.
+```
+
+With `NgModel` we can for example:
+```
+@ViewChild(NgModel) filterInput: NgModel;
+this.filterInput.valueChanges.subscribe(() => this.performFilter(this.listFilter));
+```
+
+Otherwise, `NgModel` and `NgForm` are read-only.
+
+## `ViewChildren`
+```
+@ViewChildren(NgModel) inputs: QueryList<NgModel>;
+// Above would support checking for status.
+@ViewChildren(StarComponent) stars: QueryList<StarComponent>;
+@ViewChildren('divElementVar' divElementRefs: QueryList<ElementRef>;
+@ViewChildren('filterElement, nameElement' divElementRefs: QueryList<ElementRef>;
+// Tracks changes in the DOM.
+this.divElementRefs.changes.subscribe(() => { /* act */ });
+```
 
