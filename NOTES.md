@@ -10,6 +10,8 @@ pageTitle: string = 'Product List';
 <div>{{pageTitle}}</div>
 ```
 
+Can also use functions (`{{ getPageTitle() }}`) but may run into performance issues due to how Angular checks for changes.
+
 ### Property binding
 ```typescript
 // Component
@@ -207,10 +209,47 @@ ngAfterViewInit(): void {
 2. `@Input`, getter/setter, and `OnChanges` are easier for parent to child
 	- Favor getter/setter if you only need to react to changes to specific properties
 	- Favor `OnChanges` if you want to react to any input property changes, or if you need current/previous values
+		- The key here is that it's `@Input()` property changes.
 3. Template reference variable if you want to use it in the parent's template
 4. `ViewChild` if you want to use it in the class
 	- but it won't receive notification of changes
 
+# Module 6
+## Child to parent component communication
+- Event notification: `@Output`
+- Provide information: Template reference variable, `@ViewChild`
+- Service
 
+## `@Output`
+Child:
+```typescript
+@Output() valueChange = new EventEmitter<string>(); // in @angular/core
 
+this.valueChange.emit(value);
+```
+Parent:
+```html
+<app-child (valueChange)="onValueChange($event)"></app-child>
+```
+
+```typescript
+onValueChange(value: string): void {
+	// ...
+}
+```
+
+# Module 7
+to watch
+
+# Module 8
+to watch
+
+# Module 9
+to watch
+
+# Module 10
+to watch
+
+# Module 11
+to watch
 
