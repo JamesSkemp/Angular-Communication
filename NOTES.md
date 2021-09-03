@@ -238,8 +238,58 @@ onValueChange(value: string): void {
 }
 ```
 
-# Module 7
-to watch
+# Module 7 - Services
+## Managing state options
+From simple to complex:
+1. Property bag
+2. Basic state management
+3. State management with notifications
+4. ngrx (inspired by Redux)
+
+## Property bag
+Service that just contains properties.
+
+Service:
+```typescript
+@Injectable()
+export class ThingService {
+	propertyName1: string;
+	propertyName2: boolean;
+}
+```
+Component:
+```typescript
+get propertyName1(): string {
+	return this.thingService.propertyName1;
+}
+set propertyName1(value: string) {
+	this.thingService.propertyName1 = value;
+}
+
+constructor(private thingService: ThingService) {
+}
+```
+
+Great for 'stashing away properties for itself or other components.'
+
+## Service scope
+Register the service based upon what you want to be able to use it (scope), and how long it is retained for (lifetime).
+
+- Register in the component - `@Component({ providers: [ ThingService ]})` - for that component and children (template or via router).
+	- Good if you need multiple instances of the service for different component instances.
+- Register in a module - `@NgModule({ providers: [ ThingService ] })` - no matter which module it's registered in (unless lazy-loaded) it will be available to all components.
+	- Lazy-loaded module services are only available to components declared in that module, but is then available for the entire application lifetime.
+
+`ngOnDestroy(): void { }` if you want to see the lifetime of a service.
+
+## Guidelines
+Property bag for:
+- Retaining view state
+- Retaining user selections
+- Sharing data or other state
+- Communicating state changes
+- Okay if any component can read or change the values
+- Components are only notified of state changes if they use template binding
 
 # Module 8
 to watch
