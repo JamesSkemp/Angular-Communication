@@ -292,7 +292,60 @@ Property bag for:
 - Components are only notified of state changes if they use template binding
 
 # Module 8
-to watch
+## Basic state management
+Essentially store data on the service in a private property, and populate it from the server only when needed.
+
+1. Provide state values
+2. Maintain and update state
+3. Observe state changes
+
+```typescript
+@Injectable()
+export class ThingService {
+	private things: IThing[];
+	
+	getThings(): Observable<IThing[]> {
+		if (this.things) {
+			return of(this.things);
+		}
+		// get things from the data store and save to this.things
+	}
+
+	getThing(id: number): Observable<IThing> {
+		if (this.things) {
+			const foundThing = this.things.find(item => item.id === id);
+			if (foundThing) {
+				return of(foundThing);
+			}
+		}
+		// get thing from the server and return it
+	}
+}
+```
+
+For create/update/delete either post to the server and update the item in the property list, or pull fresh content from the server, depending upon need.
+
+May want to always pull fresh data when doing an edit.
+
+You may also want to store a pull or expiration date so that you don't have stale data.
+
+## Concurrent components
+Could put a public property in a property bag or state management service that could be read/updated.
+
+In the component that reads the property, use a getter to `return this.thingService.currentThing;` if you want it to update every time `currentThing` is changed.
+
+- Define a property in the service
+- Bind that property in a template
+- Use a getter in the component class
+
+Note that you'll either need to use binding in the template to have Angular pick up changes or have a timer (`import { timer } from 'rxjs/observable/timer';` has one) in `ngOnInit` that polls for changes. Timers are not ideal.
+
+```typescript
+ngOnInit() {
+	timer(0, 1000).subscribe(t => console.log(this.thing));
+	// unsubscribe on destroy
+}
+```
 
 # Module 9
 to watch
