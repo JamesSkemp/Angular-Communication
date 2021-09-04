@@ -348,11 +348,98 @@ ngOnInit() {
 ```
 
 # Module 9
-to watch
+## Service notifications
+Can add notifications to any service, not just a state management service.
+
+`EventEmitter` only works child to parent, and you don't want to force it for service notifications.
+
+Use `Subject` or a variant like `BehaviorSubject` instead. `Subject` is a type of `Observable`, and an `Observer`. Don't necessarily need, if you can use binding.
+
+Service:
+```typescript
+@Injectable()
+export class ThingService {
+	private selectedThingSource = new Subject<IThing | null>();
+	// source = source of knowledge about selected thing
+	selectedThingChanges$ = this.selectedThingSource.asObservable();
+	// $ convention = observable (that can be subscribed to)
+	// could make the source public but then anyone could push to it
+	// instead the asObservable makes it read-only externally
+	
+	changeSelectedThing(selectedThing: IThing | null): void {
+		this.selectedThingSource.next(selectedThing);
+	}
+}
+```
+
+Component, updating:
+```typescript
+// ...
+this.thingService.changeSelectedThing(thing);
+// ...
+```
+
+Component, subscribing:
+```typescript
+export class ThingDetailComponent implements OnInit, OnDestroy {
+	thing: IThing | null;
+	thingSub: Subscription;
+
+	constructor(private thingService: ThingService) { }
+	
+	ngOnInit(): void {
+		this.thingSub = this.thingService.selectedThingChanges$.subscribe(
+			selectedThing => this.thing = selectedThing
+		);
+	}
+	
+	ngOnDestroy(): void {
+		this.thingSub.unsubscribe();
+	}
+}
+```
+
+## `BehaviorSubject`
+Many variants of subject, but this one:
+- requires an initial value
+- provides the current value on a new subscription
+
+Service:
+```typescript
+//private selectedThingSource = new Subject<IThing | null>();
+private selectedThingSource = new BehaviorSubject<IThing | null>(null);
+```
+
+Works even when components are destroyed. However, will want to make sure the component that updates also subscribes, if it needs to.
+
+## Summary
+Don't need to use `Subject` if notifications are not required, or the only notifications are for changes to bound properties.
+
+Subjects can also be used to sync multiple observables (advanced, not covered by this course).
+
+There is a `Subject` variant that can provide all previous messages.
 
 # Module 10
 to watch
 
 # Module 11
 to watch
+
+
+```typescript
+
+```
+
+```typescript
+
+```
+
+```typescript
+
+```
+
+```typescript
+
+```
+
 
