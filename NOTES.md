@@ -420,26 +420,67 @@ Subjects can also be used to sync multiple observables (advanced, not covered by
 There is a `Subject` variant that can provide all previous messages.
 
 # Module 10
-to watch
+## Route parameters
+- Required
+- Optional
+- Query
 
-# Module 11
-to watch
-
-
+### Required parameters
+Define:
 ```typescript
-
+{ path: 'products/:id', component: ProductDetailComponent }
+```
+Activate:
+```html
+<a [routerLink]="['/products', product.id]">...</a>
+```
+```typescript
+this.router.navigate(['/products', this.product.id]);
+```
+Read:
+```typescript
+this.route.snapshot.paramMap.get('id');
 ```
 
-```typescript
+### Optional parameters
+In the URL, uses `;` as the delimiter. Can be lost during navigation (versus standard query parameters).
 
+Define:
+```typescript
+{ path: 'products', component: ProductListComponent }
+```
+Activate:
+```html
+<a [routerLink]="['/products', { name: cart, code: g }]">...</a>
+```
+```typescript
+this.router.navigate(['/products', { name: 'cart', code: 'g' }]);
+```
+Read:
+```typescript
+this.route.snapshot.paramMap.get('name');
 ```
 
-```typescript
+### Query parameters
+In the URL, uses standard `?` and `&`. Can be retained across routes.
 
+Define:
+```typescript
+{ path: 'products', component: ProductListComponent }
+```
+Activate:
+```html
+<a [routerLink]="['/products']" [queryParams]="{ name: cart, code: g }">...</a>
+```
+```typescript
+this.router.navigate(['/products'], { queryParams: { name: 'cart', code: 'g' }});
+```
+Read:
+```typescript
+this.route.snapshot.queryParamMap.get('name');
 ```
 
-```typescript
-
-```
-
-
+## Summary
+- Simple
+- Bookmarkable and sharable
+- Good for small amounts of data
